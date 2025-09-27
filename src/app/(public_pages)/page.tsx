@@ -1,83 +1,39 @@
-export default function Index() {
+"use client";
+import Form from "@/components/form/form";
+import Login from "@/components/login/login";
+import { useState } from "react";
+
+const Index = () => {
+  const [pageView, setPageView] = useState<'public' | 'admin'>();
+
   return (
     <>
-      {/*
-        This example requires updating your template:
-
-        ```
-        <html class="h-full bg-gray-900">
-        <body class="h-full">
-        ```
-      */}
-      <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
-        <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-          <img
-            alt="Your Company"
-            src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=500"
-            className="mx-auto h-10 w-auto"
-          />
-          <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-white">Sign in to your account</h2>
-        </div>
-
-        <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form action="#" method="POST" className="space-y-6">
-            <div>
-              <label htmlFor="email" className="block text-sm/6 font-medium text-gray-100">
-                Email address
-              </label>
-              <div className="mt-2">
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  required
-                  autoComplete="email"
-                  className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
-                />
-              </div>
-            </div>
-
-            <div>
-              <div className="flex items-center justify-between">
-                <label htmlFor="password" className="block text-sm/6 font-medium text-gray-100">
-                  Password
-                </label>
-                <div className="text-sm">
-                  <a href="#" className="font-semibold text-indigo-400 hover:text-indigo-300">
-                    Forgot password?
-                  </a>
-                </div>
-              </div>
-              <div className="mt-2">
-                <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  required
-                  autoComplete="current-password"
-                  className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
-                />
-              </div>
-            </div>
-
-            <div>
-              <button
-                type="submit"
-                className="flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm/6 font-semibold text-white hover:bg-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
-              >
-                Sign in
-              </button>
-            </div>
-          </form>
-
-          <p className="mt-10 text-center text-sm/6 text-gray-400">
-            Not a member?{' '}
-            <a href="#" className="font-semibold text-indigo-400 hover:text-indigo-300">
-              Start a 14 day free trial
-            </a>
-          </p>
+      <div className="relative isolate px-6 pt-14 lg:px-8">
+        <div className="py-3 sm:py-5 ">
+          <div className="text-center">
+            <h1 className="text-4xl font-semibold tracking-tight text-balance text-white sm:text-7xl">
+              Plataforma de Gerenciamento de Leads
+            </h1>
+            <p className="mt-8 text-lg font-medium text-pretty text-gray-400 sm:text-xl/8">
+              Anim aute id magna aliqua ad ad non deserunt sunt. Qui irure qui lorem cupidatat commodo. Elit sunt amet
+              fugiat veniam occaecat.
+            </p>
+          </div>
         </div>
       </div>
+
+      <div className="flex mt-28 justify-center mb-20 bg-gray-800 rounded-lg p-2 max-w-sm mx-auto">
+        <button onClick={() => setPageView('public')} className={`w-1/2 py-2 px-4 rounded-md text-sm font-semibold transition-colors duration-300 ${pageView === 'public' ? 'bg-logik-green text-gray-900' : 'text-gray-300'}`}>Formulário</button>
+        <button onClick={() => setPageView('admin')} className={`w-1/2 py-2 px-4 rounded-md text-sm font-semibold transition-colors duration-300 ${pageView === 'admin' ? 'bg-logik-green text-gray-900' : 'text-gray-300'}`}>Painel Admin</button>
+      </div>
+
+      <main>
+        {pageView === 'public' && <Form />}
+        {pageView === 'admin' && <Login />}
+      </main>
+
     </>
-  )
+  );
 }
+
+export default Index;
