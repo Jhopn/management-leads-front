@@ -6,7 +6,6 @@ import AuthProvider from "@/providers/auth-provider/auth-provider";
 import Header from "@/components/header/header";
 import Footer from "@/components/footer/footer";
 import "./globals.css";
-import { cookies } from "next/headers";
 
 export const metadata = {
   title: "Meu App",
