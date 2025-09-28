@@ -1,10 +1,32 @@
 "use client";
 import Form from "@/components/form/form";
 import Login from "@/components/login/login";
-import { useState } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
+import { useEffect, useRef } from "react";
 
 const Index = () => {
-  const [pageView, setPageView] = useState<'public' | 'admin'>();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const pageView = searchParams.get('view') === 'admin' ? 'admin' : 'public';
+
+  const showPublicView = () => router.push('/');
+  const showAdminView = () => router.push('/?view=admin');
+
+  const mainContentRef = useRef<HTMLElement>(null);
+  const isInitialRender = useRef(true);
+
+  useEffect(() => {
+    if (isInitialRender.current) {
+      isInitialRender.current = false;
+      return;
+    }
+
+    mainContentRef.current?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start'
+    });
+  }, [pageView]); 
 
   return (
     <>
@@ -12,26 +34,34 @@ const Index = () => {
         <div className="py-3 sm:py-5 ">
           <div className="text-center">
             <h1 className="text-4xl font-semibold tracking-tight text-balance text-white sm:text-7xl">
-              Plataforma de Gerenciamento de Leads
+              Plataforma de Gerenciamento de <span className="text-[#00FF00]">Leads</span>
             </h1>
-            <p className="mt-8 text-lg font-medium text-pretty text-gray-400 sm:text-xl/8">
-              Anim aute id magna aliqua ad ad non deserunt sunt. Qui irure qui lorem cupidatat commodo. Elit sunt amet
-              fugiat veniam occaecat.
+            <p className="mt-8 text-lg font-medium text-pretty text-gray-400  sm:text-xl/8">
+              Gerenciando e organizando os leads com simplicidade e eficácia.
             </p>
           </div>
         </div>
       </div>
 
-      <div className="flex mt-28 justify-center mb-20 bg-gray-800 rounded-lg p-2 max-w-sm mx-auto">
-        <button onClick={() => setPageView('public')} className={`w-1/2 py-2 px-4 rounded-md text-sm font-semibold transition-colors duration-300 ${pageView === 'public' ? 'bg-logik-green text-gray-900' : 'text-gray-300'}`}>Formulário</button>
-        <button onClick={() => setPageView('admin')} className={`w-1/2 py-2 px-4 rounded-md text-sm font-semibold transition-colors duration-300 ${pageView === 'admin' ? 'bg-logik-green text-gray-900' : 'text-gray-300'}`}>Painel Admin</button>
+      <div className="flex mt-28 justify-center mb-20 border-2 border-[#00FF00] rounded-lg p-2 max-w-sm mx-auto gap-1.5">
+        <button
+          onClick={showPublicView}
+          className={`w-1/2 py-2 px-4 cursor-pointer rounded-md text-sm font-semibold transition-colors duration-300 hover:bg-[#0a7a0a] hover:text-white ${pageView === 'public' ? 'bg-[#00FF00] text-[#000]' : 'text-white'}`}
+        >
+          Formulário
+        </button>
+        <button
+          onClick={showAdminView}
+          className={`w-1/2 py-2 px-4 cursor-pointer rounded-md text-sm font-semibold transition-colors duration-300 hover:bg-[#0a7a0a] hover:text-white ${pageView === 'admin' ? 'bg-[#00FF00] text-[#000]' : 'text-white'}`}
+        >
+          Painel Admin
+        </button>
       </div>
 
-      <main>
+      <main ref={mainContentRef}>
         {pageView === 'public' && <Form />}
         {pageView === 'admin' && <Login />}
       </main>
-
     </>
   );
 }
