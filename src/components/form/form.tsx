@@ -75,7 +75,7 @@ export default function Form() {
                 type="text"
                 autoComplete="given-name"
                 {...register("name")}
-                className="block w-full rounded-md bg-white/5 px-3.5 py-2 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500"
+                className="block w-full rounded-md bg-white/5 px-3.5 py-2 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-[#00FF00]"
               />
               {errors.name && <p className="mt-2 text-sm text-red-400">{errors.name.message}</p>}
             </div>
@@ -90,7 +90,7 @@ export default function Form() {
                 type="email"
                 autoComplete="email"
                 {...register("email")}
-                className="block w-full rounded-md bg-white/5 px-3.5 py-2 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500"
+                className="block w-full rounded-md bg-white/5 px-3.5 py-2 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-[#00FF00]"
               />
               {errors.email && <p className="mt-2 text-sm text-red-400">{errors.email.message}</p>}
             </div>
@@ -106,7 +106,7 @@ export default function Form() {
                 type="date"
                 id="dateBirth"
                 {...register("dateBirth")}
-                className="block w-full rounded-md bg-white/5 px-3.5 py-2 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500"
+                className="block w-full rounded-md bg-white/5 px-3.5 py-2  text-white placeholder:text-gray-500  focus:outline-[#00FF00]"
               />
               {errors.dateBirth && <p className="mt-2 text-sm text-red-400">{errors.dateBirth.message}</p>}
             </div>
@@ -121,7 +121,7 @@ export default function Form() {
                 type="text"
                 autoComplete="organization"
                 {...register("position")}
-                className="block w-full rounded-md bg-white/5 px-3.5 py-2 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500"
+                className="block w-full rounded-md bg-white/5 px-3.5 py-2 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-[#00FF00]"
               />
               {errors.position && <p className="mt-2 text-sm text-red-400">{errors.position.message}</p>}
             </div>
@@ -131,10 +131,10 @@ export default function Form() {
               Número de Telefone
             </label>
             <div className="mt-2.5">
-              <div className="flex rounded-md bg-white/5 outline-1 -outline-offset-1 outline-white/10 has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-indigo-500">
-                <div className="grid shrink-0 grid-cols-1 focus-within:relative">
+              <div className="flex rounded-md bg-white/5 outline-1 -outline-offset-1 outline-white/10 has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-[#00FF00]">
+                <div className="grid shrink-0 grid-cols-1">
                   <div
-                    className="col-start-1 row-start-1 flex items-center justify-center rounded-l-md bg-transparent py-2 pl-3.5 pr-2 text-base text-gray-400"
+                    className="col-start-1 row-start-1 flex items-center justify-center rounded-l-md bg-transparent py-2 pl-3.5 pr-2 text-base text-gray-400 focus:outline-none"
                   >
                     +55
                   </div>
@@ -159,7 +159,7 @@ export default function Form() {
                 id="message"
                 rows={4}
                 {...register("message")}
-                className="block w-full rounded-md bg-white/5 px-3.5 py-2 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500"
+                className="block w-full rounded-md bg-white/5 px-3.5 py-2 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-[#00FF00]"
                 defaultValue={''}
               />
               {errors.message && <p className="mt-2 text-sm text-red-400">{errors.message.message}</p>}

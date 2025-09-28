@@ -44,7 +44,6 @@ export default function Login() {
 
       if (result?.error) {
         setLoginError("Credenciais inválidas. Verifique seu e-mail e senha.");
-        console.error("Falha no login:", result.error);
         return;
       }
 
@@ -52,7 +51,6 @@ export default function Login() {
 
     } catch (error) {
       setLoginError("Ocorreu um erro inesperado. Tente novamente.");
-      console.error("Erro inesperado durante o signIn:", error);
     }
   }
 
@@ -88,7 +86,7 @@ export default function Login() {
                   name="email"
                   type="email"
                   autoComplete="email"
-                  className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
+                  className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-[#00FF00] sm:text-sm/6"
                   onChange={(e) => setEmail(e.target.value)}
                   value={email}
                 />
@@ -113,7 +111,7 @@ export default function Login() {
                   name="password"
                   type="password"
                   autoComplete="current-password"
-                  className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
+                  className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-[#00FF00] sm:text-sm/6"
                   onChange={(e) => setPassword(e.target.value)}
                   value={password}
                 />

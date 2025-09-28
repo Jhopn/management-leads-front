@@ -1,4 +1,5 @@
 "use client";
+import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import React, { useState, useEffect } from "react";
@@ -7,9 +8,14 @@ import { HiMenu, HiX } from "react-icons/hi";
 const Header: React.FC = () => {
     const [open, setOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
+    const { data: session } = useSession();
 
     const searchParams = useSearchParams();
     const currentView = searchParams.get('view');
+
+    const handleLogout = () => {
+        signOut({ callbackUrl: "/" });
+    };
 
     useEffect(() => {
         const handleScroll = () => {
@@ -21,9 +27,11 @@ const Header: React.FC = () => {
         return () => {
             window.removeEventListener('scroll', handleScroll);
         };
-    }, []); 
+    }, []);
 
-    const linkClasses = "text-white relative overflow-hidden after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-[#00FF00] after:transition-all after:duration-300 hover:after:w-full hover:text-[#b6b3b3]";
+    const linkClasses = "text-white relative cursor-pointer overflow-hidden after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-[#00FF00] after:transition-all after:duration-300 hover:after:w-full hover:text-[#b6b3b3]";
+    const linkClassesExit = `text-white cursor-pointer border-b-2 border-transparent transition-colors duration-300  hover:border-red-500  hover:text-gray-300`;
+
     const activeLinkClasses = "text-[#b6b3b3] after:w-full";
 
     const fadingPartsClasses = `transition-opacity duration-300 ${isScrolled ? 'opacity-0' : 'opacity-100'}`;
@@ -32,13 +40,14 @@ const Header: React.FC = () => {
         <header className={`shadow-md sticky top-0 z-50 transition-colors duration-300 ${isScrolled ? 'bg-black/80 backdrop-blur-sm' : 'bg-transparent'}`}>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between h-16 items-center">
-                    <svg 
-                        width="80" 
-                        height="35" 
-                        viewBox="0 0 80 35" 
-                        fill="none" 
+                    <svg
+                        width="80"
+                        height="35"
+                        viewBox="0 0 80 35"
+                        fill="none"
                         xmlns="http://www.w3.org/2000/svg"
-                        className={`transition-all duration-300 ${isScrolled ? 'w-24 h-auto' : 'w-20 h-auto'}`}
+                        className={`transition-all duration-300 cursor-pointer ${isScrolled ? 'w-24 h-auto' : 'w-20 h-auto'}`}
+                        href="/"
                     >
                         <g id="logo_l0gik">
                             <path className={fadingPartsClasses} d="M56.462 0.0180664H51.8052V4.72726H56.462V0.0180664Z" fill="white"></path>
@@ -65,6 +74,9 @@ const Header: React.FC = () => {
                         <a href="https://l0gik.com.br/" target="_blank" rel="noopener noreferrer" className={linkClasses}>
                             Contato
                         </a>
+                        {session?.user ? (
+                            <span onClick={handleLogout} className={linkClassesExit}>Sair</span>
+                        ) : null}
                     </nav>
 
                     <button
@@ -84,8 +96,11 @@ const Header: React.FC = () => {
                         </Link>
                         <Link href="/?view=admin" className={`${linkClasses} ${currentView === 'admin' ? activeLinkClasses : ''}`}>
                             Painel Administrativo
-                        </Link>                        
+                        </Link>
                         <a href="https://l0gik.com.br/" className="text-white hover:text-[#00FF00]">Contato</a>
+                        {session?.user ? (
+                            <span onClick={handleLogout} className={linkClassesExit}>Sair</span>
+                        ) : null}
                     </nav>
                 </div>
             )}
