@@ -61,7 +61,6 @@ secret: process.env.NEXTAUTH_SECRET,
           });
 
           if (!res.ok) {
-            console.error("A API de login retornou um erro:", res.status, res.statusText);
             return null;
           }
 
@@ -88,24 +87,24 @@ secret: process.env.NEXTAUTH_SECRET,
   session: {
     strategy: "jwt",
   },
-  // callbacks: {
-  //   async jwt({ token, user }) {
-  //     if (user) {
-  //       token.id = user.id;
-  //       token.email = user.email;
-  //       token.roles = user.roles;
-  //       token.accessToken = user.accessToken;
-  //     }
-  //     return token;
-  //   },
-  //   async session({ session, token }) {
-  //     session.user.id = token.id;
-  //     session.user.email = token.email;
-  //     session.user.roles = token.roles;
-  //     session.accessToken = token.accessToken;
-  //     return session;
-  //   },
-  // },
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+        token.email = user.email;
+        token.roles = user.roles;
+        token.accessToken = user.accessToken;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      session.user.id = token.id;
+      session.user.email = token.email;
+      session.user.roles = token.roles;
+      session.accessToken = token.accessToken;
+      return session;
+    },
+  },
 };
 
 // 2. O HANDLER AGORA APENAS USA AS OPÇÕES

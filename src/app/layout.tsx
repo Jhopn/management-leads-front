@@ -1,5 +1,3 @@
-// app/layout.tsx
-
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route"; // Verifique se este caminho está correto
 import AuthProvider from "@/providers/auth-provider/auth-provider";
