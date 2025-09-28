@@ -10,7 +10,7 @@ export const createLeadSchema = z.object({
   email: z.string().email({ message: "Formato de e-mail inválido." }),
   telephone: z.string().regex(brazilianPhoneRegex, { message: "Formato de telefone inválido. Use (99) 99999-9999." }),
   position: z.string().min(2, { message: "O cargo é obrigatório." }),
-  dateBirth: z.coerce.date('Data inválida!').refine(birthDate => {
+  dateBirth: z.date().refine(birthDate => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const cutoffDate = new Date(today.getFullYear() - 16, today.getMonth(), today.getDate());
@@ -100,7 +100,7 @@ export default function Form() {
               htmlFor="dateBirth"
               className="block text-sm/6 font-semibold text-white">
               Data de Nascimento</label>
-              
+
             <div className="mt-2.5">
               <input
                 type="date"
