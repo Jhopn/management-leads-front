@@ -58,10 +58,8 @@ export default function Dashboard() {
     const [debouncedSearchTerm, setDebouncedSearchTerm] = useState<string>('');
 
     const [currentPage, setCurrentPage] = useState<number>(1);
-    const [itemsPerPage, setItemsPerPage] = useState<number>(1);
+    const itemsPerPage = 1;
     const [totalPages, setTotalPages] = useState<number>(1);
-    const [totalLeads, setTotalLeads] = useState<number>(0);
-
 
     useEffect(() => {
         const timerId = setTimeout(() => {
