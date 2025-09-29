@@ -5,14 +5,16 @@ import { z } from 'zod';
 import { Modal } from '@/components/modal/modal';
 import { LeadFormModal } from '@/components/lead-modal/lead';
 
+const brazilianPhoneRegex = /^\(\d{2}\) \d{5}-\d{4}$/;
+
 const leadSchema = z.object({
     id: z.string().uuid(),
-    name: z.string(),
-    email: z.string().email(),
-    telephone: z.string(),
-    position: z.string(),
-    dateBirth: z.string(),
-    message: z.string(),
+    name: z.string().min(1, "O nome é obrigatório."), 
+    email: z.string().min(1, "O e-mail é obrigatório.").email("Formato de e-mail inválido."),
+    telephone: z.string().regex(brazilianPhoneRegex, { message: "Formato de telefone inválido. Use (99) 99999-9999." }),
+    position: z.string().min(1, "O cargo é obrigatório."), 
+    dateBirth: z.string().min(1, "A data de nascimento é obrigatória."), 
+    message: z.string().min(10, { message: "A mensagem deve ter no mínimo 10 caracteres." }), 
     utm_source: z.string().nullable().optional(),
     utm_medium: z.string().nullable().optional(),
     utm_campaign: z.string().nullable().optional(),
@@ -25,7 +27,7 @@ const leadSchema = z.object({
     createdById: z.string().uuid().nullable().optional(),
 });
 
-const leadFormDataSchema = leadSchema.pick({
+export const leadFormDataSchema = leadSchema.pick({
     name: true,
     email: true,
     telephone: true,
@@ -37,7 +39,6 @@ const leadFormDataSchema = leadSchema.pick({
 export type Lead = z.infer<typeof leadSchema>;
 export type LeadFormData = z.infer<typeof leadFormDataSchema>;
 
-// --- ÍCONES SVG COMO COMPONENTES ---
 const ViewIcon: React.FC = () => <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z" /><path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.022 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" /></svg>;
 const EditIcon: React.FC = () => <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" /><path fillRule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clipRule="evenodd" /></svg>;
 const DeleteIcon: React.FC = () => <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" /></svg>;
@@ -72,7 +73,6 @@ export default function Dashboard() {
         };
     }, [searchTerm]);
 
-    // --- EFEITO PARA BUSCAR DADOS DA API (PAGINADO) ---
     useEffect(() => {
         const fetchLeads = async () => {
             try {
