@@ -204,6 +204,19 @@ export default function Dashboard() {
     // --- RENDERIZAÇÃO ---
     return (
         <div className="min-h-screen bg-transparent text-gray-800 font-sans">
+            <div
+  aria-hidden="true"
+  className="absolute inset-0 flex items-center justify-center -z-10 overflow-hidden blur-3xl"
+>
+  <div
+    style={{
+      clipPath:
+        'polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)',
+    }}
+    className="relative aspect-[1155/678] w-[72.1875rem] max-w-none -rotate-30 bg-gradient-to-tr from-[#00FF00] to-[#12bd12] opacity-30"
+  />
+</div>
+
             <div className="mx-auto max-w-2xl text-center">
                 <h2 className="text-4xl font-semibold tracking-tight text-balance text-white sm:text-5xl">Painel de Leads</h2>
                 <p className="mt-2 text-lg/8 text-gray-400">Gerencie os leads capturados.</p>
@@ -216,7 +229,7 @@ export default function Dashboard() {
                             <div className="px-4 py-5 sm:p-6 rounded-t-lg shadow">
                                 <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
                                     <div className="w-full md:w-1/2">
-                                        <input type="text" placeholder="Buscar por nome ou e-mail..." className="block w-full px-3 py-2 border bg-white/5 border-gray-700 rounded-md shadow-sm placeholder:text-white focus:outline-none focus:border-[#00FF00] sm:text-sm" value={searchTerm} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}></input>
+                                        <input type="text" placeholder="Buscar por nome ou e-mail..." className="block text-white w-full px-3 py-2 border bg-white/5 border-gray-700 rounded-md shadow-sm placeholder:text-white focus:outline-none focus:border-[#00FF00] sm:text-sm" value={searchTerm} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}></input>
                                     </div>
                                     <div className="flex space-x-3">
                                         <button onClick={handleExportCsv} className="inline-flex items-center justify-center px-4 py-2 border outline-white/10 placeholder:text-gray-500  rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 cursor-pointer">Exportar CSV</button>
@@ -224,58 +237,58 @@ export default function Dashboard() {
                                     </div>
                                 </div>
                             </div>
-                            <div className="overflow-x-auto shadow rounded-b-lg">
-                                <table className="min-w-full divide-y divide-gray-200">
-                                    <thead className="bg-gray-50">
+                            <div className="overflow-x-auto shadow-2xl">
+                                <table className="min-w-full divide-y divide-white/10">
+                                    <thead className="">
                                         <tr>
-                                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nome</th>
-                                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">E-mail</th>
-                                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Telefone</th>
+                                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Nome</th>
+                                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">E-mail</th>
+                                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Telefone</th>
                                             <th scope="col" className="relative px-6 py-3"><span className="sr-only">Ações</span></th>
                                         </tr>
                                     </thead>
-                                    <tbody className="bg-white divide-y divide-gray-200">
+                                    <tbody className="hover:bg-[#292929] bg-transparent divide-y divide-white/10 mt-1">
                                         {isLoading ? (
-                                            <tr><td colSpan={4} className="text-center py-10 text-gray-500">Carregando...</td></tr>
+                                            <tr><td colSpan={4} className="text-center py-10 text-white">Carregando...</td></tr>
                                         ) : error ? (
                                             <tr><td colSpan={4} className="text-center py-10 text-red-500">{error}</td></tr>
                                         ) : filteredLeads.length > 0 ? filteredLeads.map(lead => (
-                                            <tr key={lead.id} className="hover:bg-gray-50">
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{lead.name}</td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{lead.email}</td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{lead.telephone}</td>
+                                            <tr key={lead.id}>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-white">{lead.name}</td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-white">{lead.email}</td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-white">{lead.telephone}</td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
-                                                    <button onClick={() => handleViewDetails(lead)} className="text-[#00FF00] hover:text-[#0a7a0a]" title="Visualizar Detalhes"><ViewIcon /></button>
-                                                    <button onClick={() => handleOpenLeadModal(lead)} className="text-yellow-600 hover:text-yellow-900" title="Editar Lead"><EditIcon /></button>
-                                                    <button onClick={() => handleOpenDeleteModal(lead)} className="text-red-600 hover:text-red-900" title="Excluir Lead"><DeleteIcon /></button>
+                                                    <button onClick={() => handleViewDetails(lead)} className="text-[#00FF00] hover:text-[#0a7a0a] cursor-pointer" title="Visualizar Detalhes"><ViewIcon /></button>
+                                                    <button onClick={() => handleOpenLeadModal(lead)} className="text-yellow-600 hover:text-yellow-900 cursor-pointer" title="Editar Lead"><EditIcon /></button>
+                                                    <button onClick={() => handleOpenDeleteModal(lead)} className="text-red-600 hover:text-red-900 cursor-pointer" title="Excluir Lead"><DeleteIcon /></button>
                                                 </td>
                                             </tr>
                                         )) : (
-                                            <tr><td colSpan={4} className="text-center py-10 text-gray-500">Nenhum lead encontrado.</td></tr>
+                                            <tr><td colSpan={4} className="text-center py-10 text-white">Nenhum lead encontrado.</td></tr>
                                         )}
                                     </tbody>
                                 </table>
                             </div>
                         </div>
                         {totalPages > 1 && (
-                            <div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6 rounded-b-lg">
+                            <div className="flex items-center justify-between  border-t border-[#00FF00] px-4 py-3 sm:px-6 rounded-b-lg shadow-2xl">
                                 <div className="flex flex-1 justify-between sm:hidden">
                                     <button onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))} disabled={currentPage === 1} className="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50">Anterior</button>
                                     <button onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))} disabled={currentPage === totalPages} className="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50">Próximo</button>
                                 </div>
                                 <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
                                     <div>
-                                        <p className="text-sm text-gray-700">
-                                            Mostrando <span className="font-medium">{indexOfFirstLead + 1}</span> a <span className="font-medium">{indexOfFirstLead + leads.length}</span> de <span className="font-medium">{totalPages}</span> resultados
+                                        <p className="text-sm text-white">
+                                            Mostrando <span className="font-medium">{indexOfFirstLead + 1}</span> de <span className="font-medium">{totalPages}</span> resultados
                                         </p>
                                     </div>
                                     <div>
                                         <nav className="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
-                                            <button onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))} disabled={currentPage === 1} className="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 disabled:opacity-50">
+                                            <button onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))} disabled={currentPage === 1} className="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-[#00FF00] hover:bg-gray-50 focus:z-20 focus:outline-offset-0 disabled:opacity-50 cursor-pointer">
                                                 <span className="sr-only">Anterior</span>
                                                 <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fillRule="evenodd" d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z" clipRule="evenodd" /></svg>
                                             </button>
-                                            <button onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))} disabled={currentPage === totalPages} className="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 disabled:opacity-50">
+                                            <button onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))} disabled={currentPage === totalPages} className="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-[#00FF00] hover:bg-gray-50 focus:z-20 focus:outline-offset-0 disabled:opacity-50 cursor-pointer">
                                                 <span className="sr-only">Próximo</span>
                                                 <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fillRule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clipRule="evenodd" /></svg>
                                             </button>
@@ -288,31 +301,31 @@ export default function Dashboard() {
                 )}
 
                 {view === 'details' && selectedLead && (
-                    <div className="bg-white shadow rounded-lg overflow-hidden">
+                    <div className="shadow-2xl rounded-lg overflow-hidden">
                         <div className="px-4 py-5 sm:px-6 flex justify-between items-center border-b border-gray-200">
                             <div>
-                                <h3 className="text-2xl leading-6 font-bold text-gray-900">{selectedLead.name}</h3>
-                                <p className="mt-1 max-w-2xl text-sm text-gray-500">{selectedLead.position}</p>
+                                <h3 className="text-2xl leading-6 font-bold text-white">{selectedLead.name}</h3>
+                                <p className="mt-1 max-w-2xl text-sm text-white">{selectedLead.position}</p>
                             </div>
-                            <button onClick={() => setView('list')} className="inline-flex items-center px-4 py-2 border outline-white/10 placeholder:text-gray-500  rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">Voltar</button>
+                            <button onClick={() => setView('list')} className="inline-flex items-center px-4 py-2 border outline-white/10 placeholder:text-gray-500  rounded-md shadow-sm text-sm font-medium text-gray-700 bg-[#00FF00] hover:bg-[#0a7a0a] cursor-pointer hover:text-white">Voltar</button>
                         </div>
                         <div className="px-4 py-5 sm:p-6 grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
                             <div>
-                                <h4 className="text-lg font-semibold text-gray-800 border-b pb-2 mb-4">Informações do Lead</h4>
+                                <h4 className="text-lg font-semibold text-white border-b pb-2 mb-4">Informações do Lead</h4>
                                 <dl className="space-y-4">
-                                    <div className="grid grid-cols-3 gap-4"><dt className="text-sm font-medium text-gray-500">E-mail</dt><dd className="mt-1 text-sm text-gray-900 col-span-2">{selectedLead.email}</dd></div>
-                                    <div className="grid grid-cols-3 gap-4"><dt className="text-sm font-medium text-gray-500">Telefone</dt><dd className="mt-1 text-sm text-gray-900 col-span-2">{selectedLead.telephone}</dd></div>
-                                    <div className="grid grid-cols-3 gap-4"><dt className="text-sm font-medium text-gray-500">Data de Nasc.</dt><dd className="mt-1 text-sm text-gray-900 col-span-2">{new Date(selectedLead.dateBirth).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}</dd></div>
-                                    <div className="grid grid-cols-3 gap-4"><dt className="text-sm font-medium text-gray-500">Mensagem</dt><dd className="mt-1 text-sm text-gray-900 col-span-2 whitespace-pre-wrap">{selectedLead.message}</dd></div>
+                                    <div className="grid grid-cols-3 gap-4"><dt className="text-sm font-medium text-white">E-mail</dt><dd className="mt-1 text-sm text-white col-span-2">{selectedLead.email}</dd></div>
+                                    <div className="grid grid-cols-3 gap-4"><dt className="text-sm font-medium text-white">Telefone</dt><dd className="mt-1 text-sm text-white col-span-2">{selectedLead.telephone}</dd></div>
+                                    <div className="grid grid-cols-3 gap-4"><dt className="text-sm font-medium text-white">Data de Nasc.</dt><dd className="mt-1 text-sm text-white col-span-2">{new Date(selectedLead.dateBirth).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}</dd></div>
+                                    <div className="grid grid-cols-3 gap-4"><dt className="text-sm font-medium text-white">Mensagem</dt><dd className="mt-1 text-sm text-white col-span-2 whitespace-pre-wrap">{selectedLead.message}</dd></div>
                                 </dl>
                             </div>
                             <div>
-                                <h4 className="text-lg font-semibold text-gray-800 border-b pb-2 mb-4">Dados de Tracking</h4>
+                                <h4 className="text-lg font-semibold text-white border-b pb-2 mb-4">Dados de Tracking</h4>
                                 <dl className="space-y-4">
                                     {Object.entries({ utm_source: selectedLead.utm_source, utm_medium: selectedLead.utm_medium, utm_campaign: selectedLead.utm_campaign, utm_term: selectedLead.utm_term, utm_content: selectedLead.utm_content, gclid: selectedLead.gclid, fbclid: selectedLead.fbclid }).filter(([, value]) => value).length > 0 ?
                                         Object.entries({ utm_source: selectedLead.utm_source, utm_medium: selectedLead.utm_medium, utm_campaign: selectedLead.utm_campaign, utm_term: selectedLead.utm_term, utm_content: selectedLead.utm_content, gclid: selectedLead.gclid, fbclid: selectedLead.fbclid }).map(([key, value]) => value && (
-                                            <div key={key} className="grid grid-cols-3 gap-4"><dt className="text-sm font-medium text-gray-500">{key}</dt><dd className="mt-1 text-sm text-gray-900 col-span-2 break-all">{value}</dd></div>
-                                        )) : <p className="text-sm text-gray-500">Nenhum dado de tracking disponível.</p>}
+                                            <div key={key} className="grid grid-cols-3 gap-4"><dt className="text-sm font-medium text-white">{key}</dt><dd className="mt-1 text-sm text-white col-span-2 break-all">{value}</dd></div>
+                                        )) : <p className="text-sm text-white">Nenhum dado de tracking disponível.</p>}
                                 </dl>
                             </div>
                         </div>
