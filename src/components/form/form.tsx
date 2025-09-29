@@ -1,46 +1,27 @@
 "use client";
-import { useForm } from "react-hook-form";
+import { Resolver, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { apiClient } from "@/services";
-import * as z from "zod";
-const brazilianPhoneRegex = /^\(\d{2}\) \d{5}-\d{4}$/;
+import { useState } from "react";
+import { CreateLeadForm, createLeadSchema } from "@/schemas/leads-schemas";
+import { toast } from "sonner";
 
-export const createLeadSchema = z.object({
-  name: z.string().min(3, { message: "O nome deve ter pelo menos 3 caracteres." }),
-  email: z.string().email({ message: "Formato de e-mail inválido." }),
-  telephone: z.string().regex(brazilianPhoneRegex, { message: "Formato de telefone inválido. Use (99) 99999-9999." }),
-  position: z.string().min(2, { message: "O cargo é obrigatório." }),
-  dateBirth: z.date().refine(birthDate => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const cutoffDate = new Date(today.getFullYear() - 16, today.getMonth(), today.getDate());
-    return birthDate <= cutoffDate;
-  }, {
-    message: "Você deve ter pelo menos 16 anos."
-  }),
-  message: z.string().min(5, { message: "A mensagem deve ter pelo menos 5 caracteres." }),
-  agreeToPolicies: z.boolean().refine(val => val === true, {
-    message: "Você deve concordar com a política de privacidade."
-  }),
-});
-
-type CreateLeadForm = z.infer<typeof createLeadSchema>;
 
 export default function Form() {
+  const resolver = zodResolver(createLeadSchema) as Resolver<CreateLeadForm>;
   const { register, handleSubmit, formState: { errors }, reset } = useForm<CreateLeadForm>({
-    resolver: zodResolver(createLeadSchema),
+    resolver,
   });
 
-  // Handle form submission
-  const onSubmit = (data: CreateLeadForm) => {
-    console.log("Form data submitted:", data);
-    // Here you would typically send the data to your backend API
-    const response = apiClient.post('/leads', data)
-
-    console.log("API response:", response);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
 
-    alert("Cadastro enviado com sucesso!");
+  const onSubmit = async (data: CreateLeadForm) => {
+    setIsSubmitting(true); 
+    await apiClient.post('/leads', data)
+
+    toast.success("Cadastro enviado com sucesso!");
+    setIsSubmitting(false); 
     reset();
   };
 
@@ -195,7 +176,7 @@ export default function Form() {
             type="submit"
             className="block w-full cursor-pointer rounded-md bg-[#00FF00] px-3.5 py-2.5 text-center text-sm font-semibold text-black shadow-xs hover:bg-[#0a7a0a] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
           >
-            Enviar Cadastro
+            {isSubmitting ? 'Enviando Cadastro...' : 'Enviar Cadastro'}
           </button>
         </div>
       </form>

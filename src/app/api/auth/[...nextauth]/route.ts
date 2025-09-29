@@ -74,7 +74,6 @@ secret: process.env.NEXTAUTH_SECRET,
             accessToken: json.token,
           };
 
-          console.log("Usuário autorizado com sucesso:", user);
           return user;
 
         } catch (error) {
@@ -107,7 +106,6 @@ secret: process.env.NEXTAUTH_SECRET,
   },
 };
 
-// 2. O HANDLER AGORA APENAS USA AS OPÇÕES
 const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };

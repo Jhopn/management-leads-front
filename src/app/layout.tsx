@@ -1,13 +1,14 @@
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route"; // Verifique se este caminho está correto
+import { authOptions } from "@/app/api/auth/[...nextauth]/route"; 
 import AuthProvider from "@/providers/auth-provider/auth-provider";
 import Header from "@/components/header/header";
 import Footer from "@/components/footer/footer";
+import { Toaster } from "sonner";
 import "./globals.css";
 
 export const metadata = {
-  title: "Meu App",
-  description: "Descrição do meu app",
+  title: "Teste Técnico - Management Leads",
+  description: "Sistema de Gestão de Leads",
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
@@ -20,6 +21,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <Header />
           <main>{children}</main>
           <Footer />
+          <Toaster />
         </AuthProvider>
       </body>
     </html>

@@ -1,30 +1,29 @@
+import { LoginForm, loginSchema } from "@/schemas/login-schema";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
-import { z } from "zod";
+import { toast } from "sonner";
 
-type LoginForm = z.infer<typeof loginSchema>;
-
-const loginSchema = z.object({
-  email: z.string().email("Informe um e-mail válido."),
-  password: z.string().min(6, "A senha precisa ter no mínimo 6 caracteres.").max(80),
-});
 
 export default function Login() {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [errors, setErrors] = useState<Partial<LoginForm>>({});
   const [loginError, setLoginError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
 
   const router = useRouter();
 
   const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setIsSubmitting(true);
     setErrors({});
     setLoginError(null);
 
     const validationResult = loginSchema.safeParse({ email, password });
     if (!validationResult.success) {
+      setIsSubmitting(false);
       const fieldErrors: { [key: string]: string } = {};
       for (const issue of validationResult.error.issues) {
         if (issue.path[0]) {
@@ -43,15 +42,16 @@ export default function Login() {
       });
 
       if (result?.error) {
+        setIsSubmitting(false);
         setLoginError("Credenciais inválidas. Verifique seu e-mail e senha.");
         return;
       }
-
+      setIsSubmitting(false);
+      toast.success("Login realizado com sucesso!");
       router.push("/dashboard");
-
     } catch (error) {
+      setIsSubmitting(false);
       setLoginError("Ocorreu um erro inesperado. Tente novamente.");
-      console.log("Login error:", error);
     }
   }
 
@@ -125,7 +125,7 @@ export default function Login() {
                 type="submit"
                 className="flex cursor-pointer w-full justify-center rounded-md bg-[#00FF00] px-3 py-1.5 text-sm/6 font-semibold text-black hover:bg-[#0a7a0a] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
               >
-                Entrar
+                {isSubmitting ? 'Entrando...' : 'Entrar'}
               </button>
             </div>
             {loginError && <p className="mt-2 text-sm text-red-400 text-center">{loginError}</p>}

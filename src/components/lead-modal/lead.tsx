@@ -1,21 +1,9 @@
-// Supondo que seus tipos e schemas estão em um arquivo, por exemplo: '@/lib/schemas'
-import { Lead, LeadFormData, leadFormDataSchema } from "@/app/(private_pages)/dashboard/page";
 import { useEffect, useState } from "react";
-import { Modal } from "../modal/modal";
+import Modal from "../modal/modal";
+import { FormErrors, LeadFormData, leadFormDataSchema, LeadFormModalProps } from "@/schemas/leads-schemas";
 
-// Tipo auxiliar para armazenar os erros formatados
-type FormErrors = Partial<Record<keyof LeadFormData, string>>;
-
-interface LeadFormModalProps {
-    isOpen: boolean;
-    onClose: () => void;
-    onSave: (formData: LeadFormData) => void;
-    lead: Lead | null;
-}
-
-export const LeadFormModal: React.FC<LeadFormModalProps> = ({ isOpen, onClose, onSave, lead }) => {
+export default function LeadFormModal({ isOpen, onClose, onSave, lead }: LeadFormModalProps) {
     const [formData, setFormData] = useState<LeadFormData>({ name: '', email: '', telephone: '', position: '', dateBirth: '', message: '' });
-    // 1. Adicionar estado para os erros de validação
     const [errors, setErrors] = useState<FormErrors>({});
 
     useEffect(() => {
@@ -26,7 +14,6 @@ export const LeadFormModal: React.FC<LeadFormModalProps> = ({ isOpen, onClose, o
             } else {
                 setFormData({ name: '', email: '', telephone: '', position: '', dateBirth: '', message: '' });
             }
-            // Limpar os erros quando o modal for aberto
             setErrors({});
         }
     }, [lead, isOpen]);
@@ -34,7 +21,6 @@ export const LeadFormModal: React.FC<LeadFormModalProps> = ({ isOpen, onClose, o
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
-        // Opcional: Limpar o erro do campo ao ser modificado para melhor UX
         if (errors[name as keyof FormErrors]) {
             setErrors(prev => ({ ...prev, [name]: undefined }));
         }
@@ -42,36 +28,31 @@ export const LeadFormModal: React.FC<LeadFormModalProps> = ({ isOpen, onClose, o
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        setErrors({}); // Limpa erros antigos
+        setErrors({}); 
 
-        // 2. Validar os dados do formulário com o schema Zod importado
         const validationResult = leadFormDataSchema.safeParse(formData);
 
         if (!validationResult.success) {
-            // Se a validação falhar, formata e atualiza o estado de erros
             const formattedErrors: FormErrors = {};
             for (const issue of validationResult.error.issues) {
-                // Pega o nome do campo e a mensagem de erro
                 const fieldName = issue.path[0] as keyof LeadFormData;
                 formattedErrors[fieldName] = issue.message;
             }
             setErrors(formattedErrors);
-            return; // Impede o envio do formulário
+            return;
         }
-        
-        // Se a validação for bem-sucedida, chama onSave com os dados seguros
         onSave(validationResult.data);
+        onClose();
     };
 
     return (
         <Modal isOpen={isOpen} onClose={onClose}>
-            <form onSubmit={handleSubmit} noValidate> {/* noValidate impede a validação HTML padrão */}
+            <form onSubmit={handleSubmit} noValidate>
                 <h3 className="text-xl font-semibold mb-4 text-white">{lead ? 'Editar Lead' : 'Adicionar Novo Lead'}</h3>
                 <div className="space-y-4 h-96 overflow-y-auto pr-2 ">
                     <div>
                         <label htmlFor="name" className="block text-sm font-medium text-white">Nome Completo</label>
                         <input type="text" name="name" id="name" value={formData.name} onChange={handleChange} required className="mt-1 block w-full px-3 py-2 border border-gray-700 bg-white/5 text-white rounded-md shadow-sm  focus:outline-none focus:border-[#00FF00]" />
-                        {/* 3. Exibir a mensagem de erro para o campo 'name' */}
                         {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
                     </div>
                     <div>

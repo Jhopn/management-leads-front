@@ -1,48 +1,10 @@
 "use client";
 import React, { useState, useMemo, useEffect } from 'react';
 import { apiClient } from '@/services';
-import { z } from 'zod';
-import { Modal } from '@/components/modal/modal';
-import { LeadFormModal } from '@/components/lead-modal/lead';
-
-const brazilianPhoneRegex = /^\(\d{2}\) \d{5}-\d{4}$/;
-
-const leadSchema = z.object({
-    id: z.string().uuid(),
-    name: z.string().min(1, "O nome é obrigatório."), 
-    email: z.string().min(1, "O e-mail é obrigatório.").email("Formato de e-mail inválido."),
-    telephone: z.string().regex(brazilianPhoneRegex, { message: "Formato de telefone inválido. Use (99) 99999-9999." }),
-    position: z.string().min(1, "O cargo é obrigatório."), 
-    dateBirth: z.string().min(1, "A data de nascimento é obrigatória."), 
-    message: z.string().min(10, { message: "A mensagem deve ter no mínimo 10 caracteres." }), 
-    utm_source: z.string().nullable().optional(),
-    utm_medium: z.string().nullable().optional(),
-    utm_campaign: z.string().nullable().optional(),
-    utm_term: z.string().nullable().optional(),
-    utm_content: z.string().nullable().optional(),
-    gclid: z.string().nullable().optional(),
-    fbclid: z.string().nullable().optional(),
-    createdAt: z.string(),
-    updatedAt: z.string(),
-    createdById: z.string().uuid().nullable().optional(),
-});
-
-export const leadFormDataSchema = leadSchema.pick({
-    name: true,
-    email: true,
-    telephone: true,
-    position: true,
-    dateBirth: true,
-    message: true,
-});
-
-export type Lead = z.infer<typeof leadSchema>;
-export type LeadFormData = z.infer<typeof leadFormDataSchema>;
-
-const ViewIcon: React.FC = () => <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z" /><path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.022 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" /></svg>;
-const EditIcon: React.FC = () => <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" /><path fillRule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clipRule="evenodd" /></svg>;
-const DeleteIcon: React.FC = () => <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" /></svg>;
-
+import Modal from '@/components/modal/modal';
+import LeadFormModal  from '@/components/lead-modal/lead';
+import { Lead, LeadFormData, leadFormDataSchema } from '@/schemas/leads-schemas';
+import { toast } from 'sonner';
 
 export default function Dashboard() {
     const [leads, setLeads] = useState<Lead[]>([]);
@@ -59,14 +21,14 @@ export default function Dashboard() {
     const [debouncedSearchTerm, setDebouncedSearchTerm] = useState<string>('');
 
     const [currentPage, setCurrentPage] = useState<number>(1);
-    const itemsPerPage = 1;
+    const itemsPerPage = 4;
     const [totalPages, setTotalPages] = useState<number>(1);
 
     useEffect(() => {
         const timerId = setTimeout(() => {
             setDebouncedSearchTerm(searchTerm);
-            setCurrentPage(1); // Reseta para a página 1 ao fazer uma nova busca
-        }, 500); // Atraso de 500ms
+            setCurrentPage(1); 
+        }, 500); 
 
         return () => {
             clearTimeout(timerId);
@@ -85,7 +47,7 @@ export default function Dashboard() {
                 });
 
                 if (debouncedSearchTerm) {
-                    params.append('search', debouncedSearchTerm); // Supondo que o parâmetro de busca seja 'search'
+                    params.append('search', debouncedSearchTerm); 
                 }
 
                 const response = await apiClient.get(`/leads?${params.toString()}`);
@@ -95,6 +57,7 @@ export default function Dashboard() {
 
             } catch (err) {
                 console.error("Falha ao buscar leads:", err);
+                toast.error("Erro ao carregar leads. Tente novamente.");
                 setError("Não foi possível carregar os leads. Tente novamente mais tarde.");
             } finally {
                 setIsLoading(false);
@@ -102,12 +65,10 @@ export default function Dashboard() {
         };
 
         fetchLeads();
-    }, [currentPage, itemsPerPage, debouncedSearchTerm]); // Re-executa ao mudar de página ou busca
+    }, [currentPage, itemsPerPage, debouncedSearchTerm]); 
 
-    // --- LÓGICA DE PAGINAÇÃO ---
     const indexOfFirstLead = (currentPage - 1) * itemsPerPage;
 
-    // --- LÓGICA DE FILTRO ---
     const filteredLeads = useMemo(() =>
         leads.filter(lead =>
             lead.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -115,7 +76,6 @@ export default function Dashboard() {
         ), [leads, searchTerm]
     );
 
-    // --- MANIPULADORES DE EVENTOS ---
     const handleOpenLeadModal = (lead: Lead | null = null) => {
         setLeadToEdit(lead);
         setIsLeadModalOpen(true);
@@ -150,17 +110,17 @@ export default function Dashboard() {
 
         try {
             if (leadToEdit) {
-                // Edição
                 const response = await apiClient.patch(`/leads/${leadToEdit.id}`, validatedData.data);
                 setLeads(leads.map(lead => lead.id === leadToEdit.id ? response.data : lead));
+                toast.success("Lead atualizado com sucesso!");
             } else {
-                // Criação
                 const response = await apiClient.post('/leads', validatedData.data);
                 setLeads([response.data, ...leads]);
+                toast.success("Lead criado com sucesso!");
             }
         } catch (apiError) {
             console.error("Falha ao salvar lead:", apiError);
-            // Idealmente, mostrar um toast/notificação de erro para o usuário
+            toast.error("Não foi possível salvar o lead. Tente novamente.");
         }
 
         handleCloseLeadModal();
@@ -171,51 +131,50 @@ export default function Dashboard() {
 
         try {
             await apiClient.delete(`/leads/${leadToDelete.id}`);
-            // Atualização otimista da UI
             setLeads(leads.filter(lead => lead.id !== leadToDelete.id));
+            toast.success("Lead deletado com sucesso!");
         } catch (apiError) {
             console.error("Falha ao deletar lead:", apiError);
-            // Mostrar notificação de erro
+            toast.error("Não foi possível deletar o lead. Tente novamente.");
         }
         handleCloseDeleteModal();
     };
 
-    const downloadFile = (content: string, fileName: string, mimeType: string) => {
-        const a = document.createElement('a');
-        const blob = new Blob([content], { type: mimeType });
-        a.href = URL.createObjectURL(blob);
-        a.download = fileName;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(a.href);
+    const handleExportCsv = async () => {
+        try {
+            const response = await apiClient.get('/leads/export-csv', { responseType: 'blob' });
+            const blob = new Blob([response.data], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'leads.csv');
+
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            URL.revokeObjectURL(url);
+
+        } catch (error) {
+            console.error("Falha ao exportar CSV:", error);
+            toast.error("Não foi possível exportar os leads. Tente novamente.");
+        }
     };
 
-    const handleExportCsv = () => {
-        const headers = ['ID', 'Nome', 'Email', 'Telefone', 'Cargo', 'Data de Nascimento', 'Mensagem', 'Data de Criação', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'gclid', 'fbclid'];
-        const rows = leads.map(lead => [
-            `"${lead.id}"`, `"${lead.name}"`, `"${lead.email}"`, `"${lead.telephone}"`, `"${lead.position}"`, `"${lead.dateBirth}"`, `"${lead.message.replace(/"/g, '""')}"`, `"${lead.createdAt}"`,
-            lead.utm_source || '', lead.utm_medium || '', lead.utm_campaign || '', lead.utm_term || '', lead.utm_content || '', lead.gclid || '', lead.fbclid || '',
-        ].join(','));
-        const csvContent = [headers.join(','), ...rows].join('\n');
-        downloadFile(csvContent, 'leads.csv', 'text/csv;charset=utf-8;');
-    };
-
-    // --- RENDERIZAÇÃO ---
     return (
         <div className="min-h-screen bg-transparent text-gray-800 font-sans">
             <div
-  aria-hidden="true"
-  className="absolute inset-0 flex items-center justify-center -z-10 overflow-hidden blur-3xl"
->
-  <div
-    style={{
-      clipPath:
-        'polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)',
-    }}
-    className="relative aspect-[1155/678] w-[72.1875rem] max-w-none -rotate-30 bg-gradient-to-tr from-[#00FF00] to-[#12bd12] opacity-30"
-  />
-</div>
+                aria-hidden="true"
+                className="absolute inset-0 flex items-center justify-center -z-10 overflow-hidden blur-3xl"
+            >
+                <div
+                    style={{
+                        clipPath:
+                            'polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)',
+                    }}
+                    className="relative aspect-[1155/678] w-[72.1875rem] max-w-none -rotate-30 bg-gradient-to-tr from-[#00FF00] to-[#12bd12] opacity-30"
+                />
+            </div>
 
             <div className="mx-auto max-w-2xl text-center">
                 <h2 className="text-4xl font-semibold tracking-tight text-balance text-white sm:text-5xl">Painel de Leads</h2>
@@ -247,20 +206,28 @@ export default function Dashboard() {
                                             <th scope="col" className="relative px-6 py-3"><span className="sr-only">Ações</span></th>
                                         </tr>
                                     </thead>
-                                    <tbody className="hover:bg-[#292929] bg-transparent divide-y divide-white/10 mt-1">
+                                    <tbody className="bg-transparent divide-y divide-white/10 mt-1">
                                         {isLoading ? (
                                             <tr><td colSpan={4} className="text-center py-10 text-white">Carregando...</td></tr>
                                         ) : error ? (
                                             <tr><td colSpan={4} className="text-center py-10 text-red-500">{error}</td></tr>
                                         ) : filteredLeads.length > 0 ? filteredLeads.map(lead => (
-                                            <tr key={lead.id}>
+                                            <tr key={lead.id} className='hover:bg-[#292929]'>
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-white">{lead.name}</td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-white">{lead.email}</td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-white">{lead.telephone}</td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
-                                                    <button onClick={() => handleViewDetails(lead)} className="text-[#00FF00] hover:text-[#0a7a0a] cursor-pointer" title="Visualizar Detalhes"><ViewIcon /></button>
-                                                    <button onClick={() => handleOpenLeadModal(lead)} className="text-yellow-600 hover:text-yellow-900 cursor-pointer" title="Editar Lead"><EditIcon /></button>
-                                                    <button onClick={() => handleOpenDeleteModal(lead)} className="text-red-600 hover:text-red-900 cursor-pointer" title="Excluir Lead"><DeleteIcon /></button>
+                                                    <button onClick={() => handleViewDetails(lead)} className="text-[#00FF00] hover:text-[#0a7a0a] cursor-pointer" title="Visualizar Detalhes">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                                            <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" /><path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.022 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" /></svg>
+                                                    </button>
+                                                    <button onClick={() => handleOpenLeadModal(lead)} className="text-yellow-600 hover:text-yellow-900 cursor-pointer" title="Editar Lead"><svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                                        <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" /><path fillRule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clipRule="evenodd" /></svg>
+                                                    </button>
+                                                    <button onClick={() => handleOpenDeleteModal(lead)} className="text-red-600 hover:text-red-900 cursor-pointer" title="Excluir Lead">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                                            <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" /></svg>
+                                                    </button>
                                                 </td>
                                             </tr>
                                         )) : (

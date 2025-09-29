@@ -1,17 +1,21 @@
 "use client";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, usePathname } from "next/navigation";
 import React, { useState, useEffect } from "react";
 import { HiMenu, HiX } from "react-icons/hi";
 
-const Header: React.FC = () => {
+export default function Header() {
     const [open, setOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
     const { data: session } = useSession();
 
     const searchParams = useSearchParams();
-    const currentView = searchParams.get('view');
+    const pathname = usePathname();
+    let currentView = searchParams.get('view');
+
+    let isAdminView = false;
+    if (pathname.startsWith('/dashboard')) currentView = 'admin', isAdminView = true;
 
     const handleLogout = () => {
         signOut({ callbackUrl: "/" });
@@ -65,18 +69,30 @@ const Header: React.FC = () => {
                     </svg>
 
                     <nav className="hidden md:flex space-x-6">
-                        <Link href="/" className={`${linkClasses} ${!currentView ? activeLinkClasses : ''}`}>
-                            Formulário
-                        </Link>
-                        <Link href="/?view=admin" className={`${linkClasses} ${currentView === 'admin' ? activeLinkClasses : ''}`}>
-                            Painel Administrativo
-                        </Link>
-                        <a href="https://l0gik.com.br/" target="_blank" rel="noopener noreferrer" className={linkClasses}>
-                            Contato
-                        </a>
-                        {session?.user ? (
-                            <span onClick={handleLogout} className={linkClassesExit}>Sair</span>
-                        ) : null}
+                        {session?.user && isAdminView ? (
+                            <>
+                                <Link href="/?view=admin" className={`${linkClasses} ${currentView === 'admin' ? activeLinkClasses : ''}`}>
+                                    Painel Administrativo
+                                </Link>
+                                <a href="https://l0gik.com.br/" target="_blank" rel="noopener noreferrer" className={linkClasses}>
+                                    Contato
+                                </a>
+                                <span onClick={handleLogout} className={linkClassesExit}>Sair</span>
+
+                            </>) : (
+                            <>
+                                <Link href="/" className={`${linkClasses} ${!currentView ? activeLinkClasses : ''}`}>
+                                    Formulário
+                                </Link>
+                                <Link href="/?view=admin" className={`${linkClasses} ${currentView === 'admin' ? activeLinkClasses : ''}`}>
+                                    Painel Administrativo
+                                </Link>
+                                <a href="https://l0gik.com.br/" target="_blank" rel="noopener noreferrer" className={linkClasses}>
+                                    Contato
+                                </a>
+                            </>
+
+                        )}
                     </nav>
 
                     <button
@@ -107,5 +123,3 @@ const Header: React.FC = () => {
         </header>
     );
 };
-
-export default Header;

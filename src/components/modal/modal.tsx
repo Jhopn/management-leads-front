@@ -1,12 +1,10 @@
-
-// --- COMPONENTE DO MODAL (Genérico) ---
 interface ModalProps {
     children: React.ReactNode;
     isOpen: boolean;
     onClose: () => void;
 }
 
-export const Modal: React.FC<ModalProps> = ({ children, isOpen, onClose }) => {
+export default function Modal({ children, isOpen, onClose }: ModalProps) {
     if (!isOpen) return null;
 
     return (
