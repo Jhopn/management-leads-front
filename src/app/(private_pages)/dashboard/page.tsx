@@ -325,7 +325,9 @@ export default function Dashboard() {
 
             <Modal isOpen={isDeleteModalOpen} onClose={handleCloseDeleteModal}>
                 <h3 className="text-lg font-semibold text-white">Confirmar Exclusão</h3>
-                <p className="mt-2 text-sm text-white">Você tem certeza que deseja excluir o lead "{leadToDelete?.name}"? Esta ação não pode ser desfeita.</p>
+                <p className="mt-2 text-sm text-white">
+                    {`Você tem certeza que deseja excluir o lead "${leadToDelete?.name}"? Esta ação não pode ser desfeita.`}
+                </p>
                 <div className="mt-6 flex justify-end space-x-3">
                     <button onClick={handleCloseDeleteModal} className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 cursor-pointer">Cancelar</button>
                     <button onClick={handleConfirmDelete} className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 cursor-pointer">Excluir</button>
