@@ -107,16 +107,29 @@ export default function Header() {
             {open && (
                 <div className="md:hidden bg-black border-t shadow-sm">
                     <nav className="flex flex-col p-4 space-y-3">
-                        <Link href="/" className={`${linkClasses} ${!currentView ? activeLinkClasses : ''}`}>
-                            Formulário
-                        </Link>
-                        <Link href="/?view=admin" className={`${linkClasses} ${currentView === 'admin' ? activeLinkClasses : ''}`}>
-                            Painel Administrativo
-                        </Link>
-                        <a href="https://l0gik.com.br/" className="text-white hover:text-[#00FF00]">Contato</a>
-                        {session?.user ? (
-                            <span onClick={handleLogout} className={linkClassesExit}>Sair</span>
-                        ) : null}
+                        {session?.user && isAdminView ? (
+                            <>
+                                <Link href="/?view=admin" className={`${linkClasses} ${currentView === 'admin' ? activeLinkClasses : ''}`}>
+                                    Painel Administrativo
+                                </Link>
+                                <a href="https://l0gik.com.br/" target="_blank" rel="noopener noreferrer" className={linkClasses}>
+                                    Contato
+                                </a>
+                                <span onClick={handleLogout} className={linkClassesExit}>Sair</span>
+
+                            </>) : (
+                            <>
+                                <Link href="/" className={`${linkClasses} ${!currentView ? activeLinkClasses : ''}`}>
+                                    Formulário
+                                </Link>
+                                <Link href="/?view=admin" className={`${linkClasses} ${currentView === 'admin' ? activeLinkClasses : ''}`}>
+                                    Painel Administrativo
+                                </Link>
+                                <a href="https://l0gik.com.br/" target="_blank" rel="noopener noreferrer" className={linkClasses}>
+                                    Contato
+                                </a>
+                            </>
+                        )}
                     </nav>
                 </div>
             )}
