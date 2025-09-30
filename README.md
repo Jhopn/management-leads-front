@@ -152,10 +152,6 @@ src/
 typescript.json
 ```
 
-## Licença
-
-Este projeto está licenciado sob a licença ISC. Consulte o arquivo `LICENSE` (se existir) para mais detalhes.
-
 ---
 
 **Desenvolvido por Jhoão Pedro**
