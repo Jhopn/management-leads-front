@@ -67,8 +67,12 @@ Para iniciar o servidor de desenvolvimento do Next.js:
 npm run dev
 # ou yarn dev
 ```
+O aplicativo estará disponível em `http://localhost:3000` (ou na porta configurada nas variáveis de ambiente).
 
-O aplicativo estará disponível em `http://localhost:3001` (ou na porta configurada nas variáveis de ambiente).
+### ou acesse o deploy que está no ar!
+
+Link: https://management-leads-front.vercel.app/
+
 
 ## Build para Produção
 
